@@ -81,7 +81,7 @@
 </div>
 <p>If you run into issues, feel free to <a href="mailto:support@winterbloom.com" referrerpolicy="origin">reach out</a>.</p>
 <div class="field">
-    <button class="button is-primary is-large is-fullwidth" type="button" id="connect">Connect</button>
+    <button class="button is-primary is-large" type="button" id="connect">Connect</button>
     <p id="connect_info" class="notification hidden"></p>
 </div>
 
@@ -111,6 +111,16 @@
                 </div>
             </div>
             <div class="field device-info">
+                <label class="label" for="harware_revision">Hardware revision</label>
+                <div class="control">
+                    <div class="field">
+                        <div class="control is-expanded">
+                            <input class="input device-info" id="hardware_revision" type="text" name="hardware_revision" readonly value="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="field device-info">
                 <label class="label" for="serial_number">Serial number</label>
                 <div class="control">
                     <div class="field has-addons">
@@ -126,7 +136,7 @@
         </div>
         <div class="column">
             <p class="notification help-text">
-                This is your Castor & Pollux's current firmware version and serial number. We might ask you for this information if you reach out for help.
+                This is your Castor & Pollux's current firmware version, hardware revision, and serial number. We might ask you for this information if you reach out for help. C&PI is hardware revisions 1 through 4 and C&PII is hardware revisions 5 and above.
             </p>
             <p id="firmware_outdated" class="notification is-danger hidden">
                 <span class="fairy" title="Hey, Listen!">🧚‍♀️</span>
@@ -136,7 +146,7 @@
     </div>
     </div>
     <!-- Settings controls -->
-    <div id="settings_section" class="">
+    <div id="settings_section" class="hidden">
     <div class="section-divider">Settings</div>
     <div class="columns">
         <div class="column field">
@@ -201,7 +211,52 @@
                 makes the knobs non-linear. This setting controls how "intense"
                 that non-linearity is. <code>0.33%</code> is equivalent to a linear
                 response. Higher values make it easier and easier to tune the
-                oscillator but sacrifices the range, values lower than <code>33%</code> willmake it harder to tune and aren't recommended. This is <code>60%</code> by default.
+                oscillator but sacrifices the range, values lower than <code>33%</code>
+                will make it harder to tune and aren't recommended. This is
+                <code>60%</code> by default.
+            </p>
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column">
+            <div class="field">
+                <label class="label">Quantization</label>
+            </div>
+            <div class="field">
+                <label class="checkbox" for="quantization_enabled">
+                    <input class="checkbox" type="checkbox" id="quantization_enabled" name="quantization_enabled" value="on" data-bind />
+                    Enable Castor's semitone quantization
+                </label>
+            </div>
+        </div>
+        <div class="column">
+            <p class="notification help-text">
+                When nothing is patched into Castor's pitch CV input, Castor's pitch knob becomes a <em>coarse</em> pitch knob that sweeps across 6 octaves. By default, in this situation Castor will quantize to the nearest semitone. You can disable this to get continuous frequency changes.
+            </p>
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column">
+            <div class="field">
+                <label class="label">Jack detection</label>
+            </div>
+            <div class="field">
+                <label class="checkbox" for="zero_detection_enabled">
+                    <input class="checkbox" type="checkbox" id="zero_detection_enabled" name="zero_detection_enabled" value="on" data-bind />
+                    Enable pitch jack detection
+                </label>
+            </div>
+            <div class="field">
+                <label class="label" for="zero_detection_threshold">Zero detection threshold</label>
+                <input class="input" type="number" name="zero_detection_threshold" min="0" max="800" value="100" data-bind data-bind-type="int"/>
+                <span class="units"><span data-display-value-for="zero_detection_threshold"></span> code points
+            </div>
+        </div>
+        <div class="column">
+            <p class="notification help-text">
+                These settings determine how C&P detects the presence or absence of a signal at the pitch CV jacks. C&P does this by checking if the signal at the jack is <code>0V</code>.<br/>
+                <br/>
+                The intended behavior is that when no cable is patched to Castor's pitch input, it'll switch to "coarse" pitch behavior. Likewise for Pollux, if there's no cable patch to its pitch CV then it will follow Castor. However, some users may find this behavior undesirable, especially if you often send pitch CV of around <code>0V</code>.
             </p>
         </div>
     </div>
@@ -273,30 +328,6 @@
     <div class="columns">
         <div class="column">
             <div class="field">
-                <label class="label">LFO routing</label>
-            </div>
-            <div class="field">
-                <label class="checkbox" for="castor_lfo_pwm">
-                    <input class="checkbox" type="checkbox" id="castor_lfo_pwm" name="castor_lfo_pwm" value="on" data-bind />
-                    Route LFO to Castor's pulse width
-                </label>
-            </div>
-            <div class="field">
-                <label class="checkbox" for="pollux_lfo_pwm">
-                    <input class="checkbox" type="checkbox" id="pollux_lfo_pwm" name="pollux_lfo_pwm" value="on" data-bind />
-                    Route LFO to Pollux's pulse width
-                </label>
-            </div>
-        </div>
-        <div class="column">
-            <p class="notification help-text">
-                These settings control whether the internal LFO is used to modulate the pulse width of each oscillator by default. The routing can be enabled or disabled at any time by holding <em>hard sync</em> button and moving the oscillator's <em>pulse width</em> knob, this just enables or disables it at start-up.
-            </p>
-        </div>
-    </div>
-    <div class="columns">
-        <div class="column">
-            <div class="field">
                 <label class="label">Pulse width behavior</label>
                 <div class="select is-full-width">
                     <select id="pulse_width_bitmask" name="pulse_width_bitmask" data-bind data-bind-type="int">
@@ -314,29 +345,10 @@
             </p>
         </div>
     </div>
-    <div class="columns">
-        <div class="column">
-            <div class="field">
-                <label class="label" for="smooth_initial_gain">CV smoothing initial gain</label>
-                <input class="input" type="range" name="smooth_initial_gain" value="0.1" step="0.05" min="0" max="1" data-bind data-bind-type="float" data-binding-precision="4" />
-                <span class="units"><span data-display-value-for="smooth_initial_gain" data-display-format="percent"></span> percent</span>
-            </div>
-            <div class="field">
-                <label class="label" for="smooth_sensitivity">CV smoothing sensitivity</label>
-                <input class="input" type="range" name="smooth_sensitivity" value="20" step="1" min="0" max="100" data-bind data-bind-type="float" />
-                <span class="units"><span data-display-value-for="smooth_sensitivity"></span>x multiplier</span>
-            </div>
-        </div>
-        <div class="column">
-            <p class="notification help-text">
-                These settings control how the module filters the pitch CV inputs. Due to inherent limitations with converting analog pitch CV to a digital pitch value, such as noise and transient errors, it's necessary to basically <em>low-pass filter</em> (or <em>slew limit</em>) the readings. The module's filter is a little more sophisticated than that- it is a self-modulated low-pass filter. The <strong>initial gain setting</strong> determines the minimum effect of a new reading on the ongoing average - so if it is 0.1% then it will effect the ongoing average by 10%, if it is 1.0 then previous readings are essentially ignored because it effects the ongoing average by 100%. The <strong>sensitivity</strong> setting determines how much the low-pass filter can self-modulate. Higher settings means that the module will be more reactive to large changes in the CV input, whereas lower settings will cause the module to react very slowly to any change in the CV input.
-            </p>
-        </div>
-    </div>
     <div class="section-divider">Danger zone</div>
     <div class="columns">
         <div class="column field">
-            <p>These settings are calibrated during assembly and <strong>do not have default values</strong>. Changing these settings can cause your module to behave incorrectly. It's highly recommended that you write down these settings before making changes in case you need to restore them.</p>
+            <p>These settings are calibrated during assembly and <strong>do not have default values</strong>. Changing these settings can cause your module to behave incorrectly, so do not touch them unless you know what you're doing or have been asked to do so by support. It's highly recommended that you write down these settings before making changes in case you need to restore them.</p>
             <label class="checkbox danger-zone" for="allow_danger">
                 <input class="checkbox" type="checkbox" id="allow_danger" />
                 Let me edit dangerous settings
@@ -345,13 +357,13 @@
     </div>
     <div class="columns">
         <div class="column field">
-            <label class="label" for="pollux_follower_threshold">Pollux follower threshold</label>
-            <input class="input is-dangerous" type="number" name="pollux_follower_threshold" min="0" max="500" value="100" readonly data-bind data-bind-type="int"/>
-            <span class="units"><span data-display-value-for="pollux_follower_threshold"></span> code points, <span data-display-value-for="pollux_follower_threshold" data-display-formatter="((input.valueAsNumber / 4096) * 6.0).toFixed(2);"></span> volts</span>
+            <label class="label" for="osc8m_freq">8 MHz clock measured frequency</label>
+            <input class="input is-dangerous" type="number" name="osc8m_freq" min="7000000" max="9000000" value="8000000" readonly data-bind data-bind-type="int"/>
+            <span class="units">Hertz</span>
         </div>
         <div class="column">
             <p class="notification help-text">
-                These settings controls how Pollux determines when to follow Castor. The intended behavior is that when no cable is attached to Pollux's pitch CV jack, it will follow Castor's pitch. The module detects this condition by seeing if the input jack is reading 0 volts. Sometimes due to analog conversion errors this threshold needs to be adjusted. Lower thresholds may lead to glitchy behavior as the noise measures above and below the threshold, and higher settings may lead to Pollux ignoring the pitch CV input on lower notes.
+                Castor & Pollux uses an internal 8 MHz clock to generate the frequency signals for the oscillators. The actual frequency of this oscillator can vary between 7.94 MHz and 8.06 MHz. This setting is set to compensate for that so that the oscillator outputs are in tune.
             </p>
         </div>
     </div>
@@ -426,7 +438,7 @@
             </p>
         </div>
     </div>
-    <div class="section-divider">Save to device</div>
+    <div class="section-divider"></div>
     <div class="field">
         <button class="button is-primary is-large is-fullwidth" type="button" id="save_button">Save &amp; restart</button>
     </div>
@@ -441,7 +453,7 @@
 
 	<footer class="footer">
 		<div class="container is-max-desktop">
-			<p class="copyright">© 2020 Winterbloom</p>
+			<p class="copyright">© 2023 Winterbloom LLC</p>
 			<p class="copyright"> licensed under Creative Commons CC BY-SA 4.0</p>
 			<p class="edit-me">
 				Found an issue?
@@ -451,7 +463,7 @@
 				<a href="https://github.com/wntrblm/Castor_and_Pollux/edit/main/user_guide/docs/settings.md">Edit this page on GitHub</a>.
 			</p>
 			<p class="updated">
-				Last updated on September 22, 2022
+				Last updated on April 18, 2023
 			</p>
 		</div>
 	</footer>

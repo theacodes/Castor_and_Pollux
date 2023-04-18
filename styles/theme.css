@@ -84,7 +84,7 @@
     --display-font: var(--font-overpass);
     --text-font: var(--font-nunito);
     --mono-font: var(--font-ibm-plex-mono);
-    --font-size-base: 23px;
+    --font-size-base: 20px;
     --font-size-smallest: 0.5rem;
     --font-size-smaller: 0.75rem;
     --font-size-slightly-smaller: 0.9rem;
@@ -123,6 +123,8 @@
     --admonition-note-outline: var(--color-purple-2);
     --admonition-warning-color: var(--color-red-3);
     --admonition-warning-outline: var(--color-red-1);
+    --admonition-fairy-color: var(--color-teal-3);
+    --admonition-fairy-outline: var(--color-teal-2);
 
     /* forms */
     --form-label-color: var(--color-not-quite-black);
@@ -464,15 +466,16 @@ article blockquote {
 
 article .admonition .admonition-title {
     font-weight: bold;
-    font-size: 120%;
 }
 
 article .admonition {
     padding: 1.5em 1em 1.2em 1em;
     border-left: 8px solid #999;
     color: white;
-    margin: 2em 0;
     font-weight: normal;
+    width: 640px;
+    max-width: 80%;
+    margin: 2em auto;
 }
 
 article .admonition a {
@@ -497,6 +500,14 @@ article .admonition.warning .admonition-title::before {
     content: "⚠️ ";
 }
 
+article .admonition.fairy {
+    border-left-color: var(--admonition-fairy-color);
+    background-color: var(--admonition-fairy-outline);
+}
+article .admonition.fairy .admonition-title::before {
+    content: "🧚🏻‍♀️ ";
+}
+
 .notification .fairy {
     right: .7rem;
     position: absolute;
@@ -515,7 +526,30 @@ article .admonition.warning .admonition-title::before {
     width: 640px;
     max-width: 80%;
     margin: 2em auto;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.2), 0 0 0 1px rgba(10,10,10,.04);
+    overflow: clip;
+}
+
+.content .interactive form {
+    padding: 0.5em 2em;
+}
+
+.content .card.interactive {
     padding: 1em 2em;
+}
+.content .card.interactive form {
+    padding: 0.5em 2em 0 2em;
+}
+
+.content .winter-audio-player {
+    width: 640px;
+    max-width: 80%;
+    margin: 2em auto;
+    padding: 0.2rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.2), 0 0 0 1px rgba(10,10,10,.04);
 }
 
 /*
@@ -555,7 +589,7 @@ article .admonition.warning .admonition-title::before {
 
 .form .section-divider {
     display: block;
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     margin-bottom: 1.5rem;
     margin-top: 2rem;
     border-bottom: 1px solid #AAA;
@@ -563,6 +597,7 @@ article .admonition.warning .admonition-title::before {
 
 label.label {
     color: var(--form-label-color);
+    font-weight: normal;
 }
 
 input.input[type=range] {
@@ -574,7 +609,7 @@ input.input[type=range] {
 
 input.checkbox {
     transform: scale(2);
-    margin-right: 1em;
+    margin-right: 0.5em;
     margin-top: -0.5em;
     margin-left: 0.5em;
     vertical-align: middle;
@@ -603,13 +638,13 @@ input.checkbox {
 
 .device-info .copy-button {
     background-color: #F5F5F5;
-    padding: 0.75rem;
+    height: 100%;
 }
 
 .device-info .copy-button:hover {
     background-color: #7D61BB;
     color: white;
-    padding: 0.75rem;
+    height: 100%;
 }
 
 .field .units {
@@ -636,6 +671,10 @@ form .column .help-text code {
 
 .input.is-dangerous[readonly], .input.is-dangerous[disabled] {
     background-color: #F5F5F5;
+}
+
+label.checkbox {
+    padding-bottom: 1rem;
 }
 
 /*
@@ -823,6 +862,12 @@ html.dark .navbar-item:focus-within,  html.dark .navbar-dropdown .navbar-item:ho
 
 html.dark .card {
     background: var(--color-alt-purple-alt-2);
+    color: var(--color-white);
+}
+
+html.dark .interactive {
+    background: var(--color-alt-purple-alt-2);
+    color: var(--color-white);
 }
 
 html.dark .oshw {
